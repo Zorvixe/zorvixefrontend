@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { Users, Target, Eye, Quote, ArrowRight, Sparkles } from "lucide-react"
+import { useNavigate } from 'react-router-dom';
 
 const AboutPage = () => {
   const [activeTab, setActiveTab] = useState("who-we-are")
@@ -13,6 +14,7 @@ const AboutPage = () => {
   useEffect(() => {
     setMounted(true)
   }, [])
+  const navigate = useNavigate();
 
 
   const tabs = [
@@ -316,7 +318,7 @@ const AboutPage = () => {
         </section>
 
         {/* CTA Section */}
-        <section className="py-5">
+        <section className="py-5" >
           <div className="container">
             <motion.div
               initial={{ opacity: 0, y: 30 }}
@@ -324,7 +326,7 @@ const AboutPage = () => {
               transition={{ duration: 0.6 }}
               viewport={{ once: true }}
             >
-              <div className="card border-0 shadow-lg overflow-hidden cta-gradient text-white position-relative">
+              <div className="card border-0 shadow-lg overflow-hidden cta-gradient text-white position-relative" style={{ backgroundColor: '#5d57f4' }}>
                 {/* Background Pattern */}
                 <div className="position-absolute w-100 h-100 pattern-bg" style={{ opacity: 0.1 }}></div>
 
@@ -376,7 +378,7 @@ const AboutPage = () => {
                     transition={{ duration: 0.6, delay: 0.2 }}
                     viewport={{ once: true }}
                   >
-                    <div className="d-inline-flex align-items-center gap-2 glass-effect rounded-pill px-4 py-2 mb-4">
+                    <div className="d-inline-flex align-items-center gap-2 glass-effect rounded-pill px-4 py-2 mb-4" >
                       <Sparkles className="text-warning" size={16} />
                       <span className="small fw-medium">Ready to Transform?</span>
                     </div>
@@ -389,11 +391,14 @@ const AboutPage = () => {
                       At Zorvixe, we craft cutting-edge websites, powerful digital marketing strategies, and
                       smart business solutions that drive real results.
                     </p>
-
-                    <button className="btn btn-blue btn-lg px-5 py-3 rounded-pill fs-5 d-inline-flex align-items-center gap-2">
+                    <button
+                      className="btn btn-blue btn-lg px-5 py-3 rounded-pill fs-5 d-inline-flex align-items-center gap-2"
+                      onClick={() => navigate('/contact_us')}
+                    >
                       Let's Start Your Journey
                       <ArrowRight size={20} />
                     </button>
+
                   </motion.div>
                 </div>
               </div>

@@ -62,7 +62,7 @@ const SEOServicePage = () => {
             <div className="col-lg-6">
               <div className="service-main-image" data-aos="zoom-in" data-aos-delay="200">
                 <img 
-                  src="https://images.unsplash.com/photo-1551434678-e076c223a692?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80" 
+                  src="/assets/img/seo/seo_1.webp" 
                   alt="SEO Services" 
                   className="img-fluid rounded-4"
                 />
@@ -148,7 +148,7 @@ const SEOServicePage = () => {
                 <div className="row align-items-center">
                   <div className="col-lg-5" data-aos="fade-right" data-aos-delay="100">
                     <img 
-                      src="https://images.unsplash.com/photo-1555066931-4365d14bab8c?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80" 
+                      src="/assets/img/seo/seo_2.webp" 
                       alt="Technical SEO"
                       className="img-fluid rounded-4"
                     />
@@ -188,7 +188,7 @@ const SEOServicePage = () => {
                 <div className="row align-items-center">
                   <div className="col-lg-5" data-aos="fade-right" data-aos-delay="100">
                     <img 
-                      src="https://images.unsplash.com/photo-1501504905252-473c47e087f8?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1074&q=80" 
+                      src="/assets/img/seo/seo_3.webp" 
                       alt="SEO Content Strategy"
                       className="img-fluid rounded-4"
                     />
@@ -226,7 +226,7 @@ const SEOServicePage = () => {
                 <div className="row align-items-center">
                   <div className="col-lg-5" data-aos="fade-right" data-aos-delay="100">
                     <img 
-                      src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80" 
+                      src="/assets/img/seo/seo_4.webp" 
                       alt="SEO Link Building"
                       className="img-fluid rounded-4"
                     />
@@ -264,7 +264,7 @@ const SEOServicePage = () => {
                 <div className="row align-items-center">
                   <div className="col-lg-5" data-aos="fade-right" data-aos-delay="100">
                     <img 
-                      src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80" 
+                      src="/assets/img/seo/seo_4.webp" 
                       alt="SEO Analytics"
                       className="img-fluid rounded-4"
                     />

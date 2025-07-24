@@ -28,7 +28,7 @@ const Contact = () => {
       setErrors(prev => ({ ...prev, [name]: '' }));
     }
   };
-  
+
   useEffect(() => {
     document.title = "Contact Us | Zorvixe";
   }, []);
@@ -187,7 +187,7 @@ const Contact = () => {
                 <i className="bi bi-geo-alt"></i>
               </div>
               <h3>Our Address</h3>
-              <p>Q3X4+R7Q, Sree Rama Nagar, Kurnool, Andhra Pradesh 518002</p>
+              <p>Kurnool Andhra Pradesh, Hyderabad, Banglore</p>
             </div>
           </div>
 
@@ -198,8 +198,8 @@ const Contact = () => {
                 <i className="bi bi-telephone"></i>
               </div>
               <h3>Contact Number</h3>
-              <p>
-                Mobile: +91 8328590444<br />
+              <p>Mobile: +91 8328590444 / 7993971574<br />
+
                 Email: zorvixe@gmail.com
               </p>
             </div>
@@ -353,7 +353,7 @@ const Contact = () => {
                   </button>
                 </div>
               </form>
-              
+
               {/* Location Map */}
               <div className="col-12 mt-5">
                 <div className="container-fluid px-0">
@@ -377,7 +377,7 @@ const Contact = () => {
       {/* Success Modal */}
       <Modal show={showModal} onHide={() => setShowModal(false)} centered>
         <Modal.Header closeButton>
-          <Modal.Title><img className='contact_zorvixe_logo' src='/assets/img/zorvixe_logo.png' /></Modal.Title>
+          <Modal.Title><img className='contact_zorvixe_logo' src='/assets/img/zorvixe_logo.png' alt='contact_zorvixe_logo' /></Modal.Title>
         </Modal.Header>
         <Modal.Body className="text-center p-1">
           <div className="mb-4">

@@ -569,7 +569,7 @@ const Home = () => {
                                     <i className="bi bi-geo-alt"></i>
                                 </div>
                                 <h3>Our Address</h3>
-                                <p>Q3X4+R7Q, Sree Rama Nagar, Kurnool, Andhra Pradesh 518002</p>
+                                <p>Kurnool Andhra Pradesh, Hyderabad, Banglore</p>
                             </div>
                         </div>
 
@@ -579,7 +579,7 @@ const Home = () => {
                                     <i className="bi bi-telephone"></i>
                                 </div>
                                 <h3>Contact Number</h3>
-                                <p>Mobile: +91 8328590444<br />
+                                <p>Mobile: +91 8328590444 / 7993971574<br />
                                     Email: zorvixe@gmail.com</p>
                             </div>
                         </div>

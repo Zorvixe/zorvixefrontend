@@ -1,4 +1,3 @@
-import React from 'react';
 import { Link } from 'react-router-dom';
 
 const Footer = () => {
@@ -50,8 +49,8 @@ const Footer = () => {
           <div className="col-lg-4 col-md-6 footer-about">
             <h4>Address</h4>
             <div className="footer-contact">
-              <p>Q3X4+R7Q, Sree Rama Nagar, Kurnool, Andhra Pradesh 518002</p>
-              <p className="mt-3"><strong>Phone:</strong> <span>+91 8328590444</span></p>
+              <p>Kurnool Andhra Pradesh, Hyderabad, Banglore</p>
+              <p className="mt-3"><strong>Phone:</strong> <span>+91 8328590444 / 7993971574</span></p>
               <p><strong>Email:</strong> <span>zorvixe@gmail.com</span></p>
             </div>
             <div className="social-links d-flex mt-4">
