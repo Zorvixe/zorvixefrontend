@@ -5,9 +5,7 @@ import './payment.css';
 
 const Payment = () => {
   const { token } = useParams();
-  const [paymentLink, setPaymentLink] = useState(null);
-  const [linkLoading, setLinkLoading] = useState(true);
-
+  const [paymentDetails, setPaymentDetails] = useState(null);
   const [file, setFile] = useState(null);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [imageLoading, setImageLoading] = useState(false);
@@ -18,79 +16,39 @@ const Payment = () => {
   const [loadingLink, setLoadingLink] = useState(true);
   const navigate = useNavigate();
 
-  // Payment details (would normally come from props or context)
-  const paymentDetails = {
-    clientName: "D Vittal",
-    projectName: "ShortenLink Website",
-    clientId: "ZOR-214A12",
-    amount: 5000,
-    dueDate: "2025-07-20"
-  };
-
-  useEffect(() => {
-    const fetchPaymentLink = async () => {
-      try {
-        setLinkLoading(true);
-        const response = await fetch(
-          'https://zorvixebackend.onrender.com/api/admin/payment-link/4vXcZpLmKjQ8aTyNfRbEoWg7HdUs29qT'
-        );
-        const data = await response.json();
-
-        if (response.ok && data.success) {
-          setPaymentLink(data.paymentLink);
-        } else {
-          setPaymentLink(null);
-        }
-      } catch (error) {
-        console.error('Error fetching payment link:', error);
-        setPaymentLink(null);
-      } finally {
-        setLinkLoading(false);
-      }
-    };
-
-    fetchPaymentLink();
-  }, []);
-
-  const togglePaymentLink = async (active) => {
-    try {
-      const response = await fetch(
-        'https://zorvixebackend.onrender.com/api/admin/payment-link/4vXcZpLmKjQ8aTyNfRbEoWg7HdUs29qT',
-        {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ active })
-        }
-      );
-
-      const data = await response.json();
-
-      if (response.ok && data.success) {
-        setPaymentLink(data.paymentLink);
-      } else {
-        alert('Failed to update link status');
-      }
-    } catch (error) {
-      console.error('Error toggling payment link:', error);
-      alert('Error updating link status');
-    }
-  };
-
+  // Check link status and fetch client details
   useEffect(() => {
     const checkLinkStatus = async () => {
       try {
-        const response = await fetch(
+        setLoadingLink(true);
+        
+        // Check if link is active
+        const statusResponse = await fetch(
           `https://zorvixebackend.onrender.com/api/payment-link/${token}`
         );
-        const data = await response.json();
-
-        if (response.ok && data.success) {
-          setLinkActive(data.active);
+        const statusData = await statusResponse.json();
+        
+        if (statusResponse.ok && statusData.success) {
+          setLinkActive(statusData.active);
+          
+          // Fetch client details only if link is active
+          if (statusData.active) {
+            const clientResponse = await fetch(
+              `https://zorvixebackend.onrender.com/api/client-details/${token}`
+            );
+            const clientData = await clientResponse.json();
+            
+            if (clientResponse.ok && clientData.success) {
+              setPaymentDetails(clientData.client);
+            } else {
+              setPaymentDetails(null);
+            }
+          }
         } else {
           setLinkActive(false);
         }
       } catch (error) {
-        console.error('Error checking link status:', error);
+        console.error('Error:', error);
         setLinkActive(false);
       } finally {
         setLoadingLink(false);
@@ -100,7 +58,7 @@ const Payment = () => {
     checkLinkStatus();
   }, [token]);
 
-
+  // Loading state
   if (loadingLink) {
     return (
       <div className="payment-container links_status_loader">
@@ -112,6 +70,7 @@ const Payment = () => {
     );
   }
 
+  // Inactive link state
   if (!linkActive) {
     return (
       <div className="container vh-100 d-flex justify-content-center align-items-center">
@@ -128,14 +87,22 @@ const Payment = () => {
           </button>
         </div>
       </div>
-
     );
   }
 
+  // Loading payment details
+  if (!paymentDetails) {
+    return (
+      <div className="payment-container links_status_loader">
+        <div className="loading-container">
+          <div className="loading-spinner"></div>
+          <p>Loading payment details...</p>
+        </div>
+      </div>
+    );
+  }
 
-
-
-
+  // File upload handling
   const uploadImageToCloudinary = async (file) => {
     const formData = new FormData();
     formData.append("file", file);
@@ -232,14 +199,15 @@ const Payment = () => {
         setReferenceId(data.referenceId);
         setIsSubmitted(true);
       } else {
-        throw new Error('We’ve received your payment, but it’s still being verified. Please wait around 50 seconds before trying to upload your receipt again.');
+        throw new Error(data.message || 'Failed to submit payment');
       }
     } catch (error) {
-      console.error('We’ve received your payment, but it’s still being verified. Please wait around 50 seconds before trying to upload your receipt again.');
-      alert('We’ve received your payment, but it’s still being verified. Please wait around 50 seconds before trying to upload your receipt again.');
+      console.error('Payment submission error:', error);
+      alert(error.message || 'Failed to submit payment');
     }
   };
 
+  // Success screen
   if (isSubmitted) {
     return (
       <div className="payment-container">
@@ -265,7 +233,6 @@ const Payment = () => {
             <button className="back-btn" onClick={() => navigate('/')}>
               Go to Home
             </button>
-
           </div>
         </div>
       </div>
@@ -351,7 +318,6 @@ const Payment = () => {
         </div>
       </div>
 
-
       {/* Terms & Conditions Card */}
       <div className="card terms-card">
         <div className="card-header">
@@ -391,6 +357,7 @@ const Payment = () => {
           </div>
         </div>
       </div>
+
       {/* Payment Methods Card */}
       <div className="card payment-methods-card">
         <div className="card-header">
@@ -458,7 +425,7 @@ const Payment = () => {
                   </div>
                 </div>
                 <div className="qr-instructions">
-                  <h5>Scan to Pay Rs. 5,000</h5>
+                  <h5>Scan to Pay Rs. {paymentDetails.amount.toLocaleString()}</h5>
                   <p>Use your mobile banking app or digital wallet</p>
                   <div className="supported-apps">
                     <span>Phonepe</span>
@@ -566,16 +533,12 @@ const Payment = () => {
             </div>
             <button
               className="submit-button"
-              onClick={() => {
-                handleSubmit();
-                togglePaymentLink(false);
-              }}
+              onClick={handleSubmit}
               disabled={!file || imageLoading}
             >
               <Check size={20} />
               {imageLoading ? 'Processing...' : 'Submit Registration'}
             </button>
-
           </div>
         </div>
       </div>
