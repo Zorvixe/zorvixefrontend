@@ -1,97 +1,66 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import { Building2, CreditCard, Upload, Check, Calendar, DollarSign, FileText, QrCode, Trash2, XCircle } from 'lucide-react';
-import './payment.css';
+"use client"
+
+import { useState,useCallback, useEffect, useRef } from "react"
+import { useParams, useNavigate } from "react-router-dom"
+import {
+  Building2,
+  CreditCard,
+  Upload,
+  Check,
+  Calendar,
+  DollarSign,
+  FileText,
+  QrCode,
+  Trash2,
+  XCircle,
+  User,
+  FolderOpen,
+  Info,
+} from "lucide-react"
+import "./payment.css"
 
 const Payment = () => {
-  const { token } = useParams();
-  const [paymentDetails, setPaymentDetails] = useState(null);
-  const [file, setFile] = useState(null);
-  const [isSubmitted, setIsSubmitted] = useState(false);
-  const [imageLoading, setImageLoading] = useState(false);
-  const [dragActive, setDragActive] = useState(false);
-  const [referenceId, setReferenceId] = useState('');
-  const fileInputRef = useRef(null);
-  const [linkActive, setLinkActive] = useState(false);
-  const [loadingLink, setLoadingLink] = useState(true);
-  const navigate = useNavigate();
+  const { token } = useParams()
+  const navigate = useNavigate()
 
-  // Check link status and fetch client details
-  useEffect(() => {
-    const checkLinkStatus = async () => {
-      try {
-        setLoadingLink(true);
-        
-        // Check if link is active
-        const statusResponse = await fetch(
-          `https://zorvixebackend.onrender.com/api/payment-link/${token}`
-        );
-        const statusData = await statusResponse.json();
-        
-        if (statusResponse.ok && statusData.success) {
-          setLinkActive(statusData.active);
-          
-          // Fetch client details only if link is active
-          if (statusData.active) {
-            const clientResponse = await fetch(
-              `https://zorvixebackend.onrender.com/api/client-details/${token}`
-            );
-            const clientData = await clientResponse.json();
-            
-            if (clientResponse.ok && clientData.success) {
-              setPaymentDetails(clientData.client);
-            } else {
-              setPaymentDetails(null);
-            }
-          }
-        } else {
-          setLinkActive(false);
-        }
-      } catch (error) {
-        console.error('Error:', error);
-        setLinkActive(false);
-      } finally {
-        setLoadingLink(false);
-      }
-    };
+  const [clientDetails, setClientDetails] = useState(null)
+  const [loading, setLoading] = useState(true)
+  const [file, setFile] = useState(null)
+  const [isSubmitted, setIsSubmitted] = useState(false)
+  const [imageLoading, setImageLoading] = useState(false)
+  const [dragActive, setDragActive] = useState(false)
+  const [referenceId, setReferenceId] = useState("")
+  const fileInputRef = useRef(null)
 
-    checkLinkStatus();
-  }, [token]);
+ 
+ 
+const fetchClientDetails = useCallback(async () => {
+  try {
+    setLoading(true)
+    const response = await fetch(`https://zorvixebackend.onrender.com/api/client-details/${token}`)
+    const data = await response.json()
+
+    if (response.ok && data.success) {
+      setClientDetails(data.client)
+    } else {
+      console.error("Failed to fetch client details:", data.message)
+      setClientDetails(null)
+    }
+  } catch (error) {
+    console.error("Error fetching client details:", error)
+    setClientDetails(null)
+  } finally {
+    setLoading(false)
+  }
+}, [token]) // token is a dependency of fetchClientDetails
+
+useEffect(() => {
+  fetchClientDetails()
+}, [fetchClientDetails]) // now ESLint is happy
+
 
   // Loading state
-  if (loadingLink) {
-    return (
-      <div className="payment-container links_status_loader">
-        <div className="loading-container">
-          <div className="loading-spinner"></div>
-          <p>Checking link status...</p>
-        </div>
-      </div>
-    );
-  }
-
-  // Inactive link state
-  if (!linkActive) {
-    return (
-      <div className="container vh-100 d-flex justify-content-center align-items-center">
-        <div className="text-center border rounded shadow p-4" style={{ maxWidth: '450px', width: '100%' }}>
-          <div className="text-danger mb-3">
-            <XCircle size={48} />
-          </div>
-          <h2 className="mb-2">Payment Link Inactive</h2>
-          <p className="text-muted mb-4">
-            This payment link is currently inactive. Please contact support.
-          </p>
-          <button className="btn btn-outline-primary" onClick={() => navigate('/')}>
-            Go to Home
-          </button>
-        </div>
-      </div>
-    );
-  }
-
-  // Loading payment details
-  if (!paymentDetails) {
+  if (loading) {
     return (
       <div className="payment-container links_status_loader">
         <div className="loading-container">
@@ -99,115 +68,135 @@ const Payment = () => {
           <p>Loading payment details...</p>
         </div>
       </div>
-    );
+    )
   }
 
-  // File upload handling
+  // Error state - link inactive or expired
+  if (!clientDetails) {
+    return (
+      <div className="container vh-100 d-flex justify-content-center align-items-center">
+        <div className="text-center border rounded shadow p-4" style={{ maxWidth: "450px", width: "100%" }}>
+          <div className="text-danger mb-3">
+            <XCircle size={48} />
+          </div>
+          <h2 className="mb-2">Payment Link Inactive</h2>
+          <p className="text-muted mb-4">
+            This payment link is inactive, expired, or not found. Please contact support for assistance.
+          </p>
+          <button className="btn btn-outline-primary" onClick={() => navigate("/")}>
+            Go to Home
+          </button>
+        </div>
+      </div>
+    )
+  }
+
   const uploadImageToCloudinary = async (file) => {
-    const formData = new FormData();
-    formData.append("file", file);
-    formData.append("upload_preset", "sfdqoeq5");
-    formData.append("cloud_name", "dsjcty43b");
+    const formData = new FormData()
+    formData.append("file", file)
+    formData.append("upload_preset", "sfdqoeq5")
+    formData.append("cloud_name", "dsjcty43b")
 
     try {
-      setImageLoading(true);
+      setImageLoading(true)
       const response = await fetch("https://api.cloudinary.com/v1_1/dsjcty43b/image/upload", {
         method: "POST",
         body: formData,
-      });
-      const data = await response.json();
-      return data.secure_url;
+      })
+      const data = await response.json()
+      return data.secure_url
     } catch (error) {
-      console.error("Error uploading to Cloudinary:", error);
-      return null;
+      console.error("Error uploading to Cloudinary:", error)
+      return null
     } finally {
-      setImageLoading(false);
+      setImageLoading(false)
     }
-  };
+  }
 
   const handleDrag = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
+    e.preventDefault()
+    e.stopPropagation()
     if (e.type === "dragenter" || e.type === "dragover") {
-      setDragActive(true);
+      setDragActive(true)
     } else if (e.type === "dragleave") {
-      setDragActive(false);
+      setDragActive(false)
     }
-  };
+  }
 
   const handleDrop = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setDragActive(false);
-
+    e.preventDefault()
+    e.stopPropagation()
+    setDragActive(false)
     if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-      handleFileChange(e.dataTransfer.files[0]);
+      handleFileChange(e.dataTransfer.files[0])
     }
-  };
+  }
 
   const handleFileChange = async (file) => {
-    if (!file) return;
+    if (!file) return
 
-    // Validate file type and size
-    const validTypes = ['image/jpeg', 'image/png', 'image/jpg', 'application/pdf'];
+    const validTypes = ["image/jpeg", "image/png", "image/jpg", "application/pdf"]
     if (!validTypes.includes(file.type)) {
-      alert('Please upload a valid image (JPG, PNG) or PDF file');
-      return;
+      alert("Please upload a valid image (JPG, PNG) or PDF file")
+      return
     }
 
-    if (file.size > 5 * 1024 * 1024) { // 5MB
-      alert('File size exceeds 5MB limit');
-      return;
+    if (file.size > 5 * 1024 * 1024) {
+      alert("File size exceeds 5MB limit")
+      return
     }
 
-    const imageUrl = await uploadImageToCloudinary(file);
+    const imageUrl = await uploadImageToCloudinary(file)
     if (imageUrl) {
       setFile({
         name: file.name,
         size: file.size,
         type: file.type,
-        url: imageUrl
-      });
+        url: imageUrl,
+      })
     }
-  };
+  }
 
   const handleSubmit = async () => {
     if (!file) {
-      alert('Please upload a payment receipt before submitting');
-      return;
+      alert("Please upload a payment receipt before submitting")
+      return
     }
 
     try {
-      const response = await fetch('https://zorvixebackend.onrender.com/api/payment/submit', {
-        method: 'POST',
+      const response = await fetch("https://zorvixebackend.onrender.com/api/payment/submit", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          clientName: paymentDetails.clientName,
-          projectName: paymentDetails.projectName,
-          clientId: paymentDetails.clientId,
-          amount: paymentDetails.amount,
-          dueDate: paymentDetails.dueDate,
-          receiptUrl: file.url
-        })
-      });
+          clientId: clientDetails.id,
+          clientName: clientDetails.clientName,
+          projectName: clientDetails.projectName,
+          projectId: clientDetails.project_id,
+          zorvixeId: clientDetails.zorvixe_id,
+          amount: clientDetails.amount,
+          dueDate: clientDetails.dueDate,
+          receiptUrl: file.url,
+          projectDescription: clientDetails.project_description,
+          linkId: clientDetails.linkId,
+        }),
+      })
 
-      const data = await response.json();
-
+      const data = await response.json()
       if (response.ok) {
-        setReferenceId(data.referenceId);
-        setIsSubmitted(true);
+        setReferenceId(data.referenceId)
+        setIsSubmitted(true)
       } else {
-        throw new Error(data.message || 'Failed to submit payment');
+        throw new Error(data.message || "Failed to submit payment registration")
       }
     } catch (error) {
-      console.error('Payment submission error:', error);
-      alert(error.message || 'Failed to submit payment');
+      console.error("Error submitting payment:", error)
+      alert("Failed to submit payment registration. Please try again.")
     }
-  };
+  }
 
-  // Success screen
+  // Success state
   if (isSubmitted) {
     return (
       <div className="payment-container">
@@ -219,7 +208,29 @@ const Payment = () => {
             <h2>Registration Submitted Successfully!</h2>
             <p>Your payment registration has been received and is being processed.</p>
             <div className="reference-info">
-              <span>Reference ID: <strong>{referenceId}</strong></span>
+              <span>
+                Reference ID: <strong>{referenceId}</strong>
+              </span>
+            </div>
+            <div className="client-summary">
+              <h4>Registration Details:</h4>
+              <div className="summary-grid">
+                <div>
+                  <strong>Client:</strong> {clientDetails.clientName}
+                </div>
+                <div>
+                  <strong>Project:</strong> {clientDetails.projectName}
+                </div>
+                <div>
+                  <strong>Project ID:</strong> {clientDetails.project_id}
+                </div>
+                <div>
+                  <strong>Zorvixe ID:</strong> {clientDetails.zorvixe_id}
+                </div>
+                <div>
+                  <strong>Amount:</strong> Rs. {clientDetails.amount?.toLocaleString()}
+                </div>
+              </div>
             </div>
             <div className="next-steps">
               <h4>What happens next?</h4>
@@ -230,13 +241,13 @@ const Payment = () => {
                 <li>Project kickoff within 24-48 hours</li>
               </ul>
             </div>
-            <button className="back-btn" onClick={() => navigate('/')}>
+            <button className="back-btn" onClick={() => navigate("/")}>
               Go to Home
             </button>
           </div>
         </div>
       </div>
-    );
+    )
   }
 
   return (
@@ -245,6 +256,7 @@ const Payment = () => {
       <div className="header">
         <img src="/assets/img/zorvixe_logo.png" alt="Zorvixe Logo" className="logo_payment" />
       </div>
+
       <div className="header-section">
         <div className="header-content">
           <Building2 size={32} className="header-icon" />
@@ -258,7 +270,7 @@ const Payment = () => {
         </div>
       </div>
 
-      {/* Client Details Card */}
+      {/* Client Details Card - IMPROVED */}
       <div className="card client-card">
         <div className="card-header">
           <div className="card-title">
@@ -268,53 +280,75 @@ const Payment = () => {
           <div className="card-badge">Active</div>
         </div>
         <div className="card-content">
-          <div className="details-grid">
-            <div className="detail-item">
-              <div className="detail-icon">
-                <FileText size={16} />
+          {/* Client Info Section */}
+          <div className="client-info-section">
+            <div className="client-avatar">
+              <User size={32} />
+            </div>
+            <div className="client-main-info">
+              <h3 className="client-name">{clientDetails.clientName}</h3>
+              <p className="client-email">{clientDetails.email}</p>
+            </div>
+          </div>
+
+          {/* Details Grid */}
+          <div className="details-grid-improved">
+            {/* Project Information */}
+            <div className="detail-section">
+              <div className="section-header">
+                <FolderOpen size={18} />
+                <h4>Project Information</h4>
               </div>
-              <div className="detail-content">
-                <label>Client Name</label>
-                <p>{paymentDetails.clientName}</p>
+              <div className="detail-items">
+                <div className="detail-item-improved">
+                  <div className="detail-label">Project Name</div>
+                  <div className="detail-value">{clientDetails.projectName}</div>
+                </div>
+                <div className="detail-item-improved">
+                  <div className="detail-label">Project ID</div>
+                  <div className="detail-value project-id">{clientDetails.project_id}</div>
+                </div>
+                <div className="detail-item-improved">
+                  <div className="detail-label">Zorvixe ID</div>
+                  <div className="detail-value zorvixe-id">{clientDetails.zorvixe_id}</div>
+                </div>
               </div>
             </div>
-            <div className="detail-item">
-              <div className="detail-icon">
-                <FileText size={16} />
+
+            {/* Payment Information */}
+            <div className="detail-section">
+              <div className="section-header">
+                <DollarSign size={18} />
+                <h4>Payment Information</h4>
               </div>
-              <div className="detail-content">
-                <label>Project Name</label>
-                <p>{paymentDetails.projectName}</p>
-              </div>
-            </div>
-            <div className="detail-item">
-              <div className="detail-icon">
-                <Building2 size={16} />
-              </div>
-              <div className="detail-content">
-                <label>Client ID</label>
-                <p>{paymentDetails.clientId}</p>
-              </div>
-            </div>
-            <div className="detail-item highlight-item">
-              <div className="detail-icon">
-                <DollarSign size={16} />
-              </div>
-              <div className="detail-content">
-                <label>Registration Fee</label>
-                <p className="amount">Rs. {paymentDetails.amount.toLocaleString()}</p>
-              </div>
-            </div>
-            <div className="detail-item">
-              <div className="detail-icon">
-                <Calendar size={16} />
-              </div>
-              <div className="detail-content">
-                <label>Due Date</label>
-                <p>{new Date(paymentDetails.dueDate).toLocaleDateString()}</p>
+              <div className="detail-items">
+                <div className="detail-item-improved highlight">
+                  <div className="detail-label">Registration Fee</div>
+                  <div className="detail-value amount-value">Rs. {clientDetails.amount?.toLocaleString()}</div>
+                </div>
+                <div className="detail-item-improved">
+                  <div className="detail-label">Due Date</div>
+                  <div className="detail-value due-date">
+                    <Calendar size={14} />
+                    {new Date(clientDetails.dueDate).toLocaleDateString()}
+                  </div>
+                </div>
               </div>
             </div>
           </div>
+
+          {/* Project Description */}
+          {clientDetails.project_description && (
+            <div className="project-description-section">
+              <div className="section-header">
+                <Info size={18} />
+                <h4>Project Description</h4>
+              </div>
+              <div className="description-content">
+                <p>{clientDetails.project_description}</p>
+              </div>
+            </div>
+          )}
         </div>
       </div>
 
@@ -332,25 +366,29 @@ const Payment = () => {
               <div className="term-item">
                 <div className="term-number">01</div>
                 <div className="term-text">
-                  <strong>Payment Requirement:</strong> Project initiation requires full registration fee payment before development begins.
+                  <strong>Payment Requirement:</strong> Project initiation requires full registration fee payment before
+                  development begins.
                 </div>
               </div>
               <div className="term-item">
                 <div className="term-number">02</div>
                 <div className="term-text">
-                  <strong>Non-Refundable:</strong> All payments are non-refundable once project development commences and resources are allocated.
+                  <strong>Non-Refundable:</strong> All payments are non-refundable once project development commences
+                  and resources are allocated.
                 </div>
               </div>
               <div className="term-item">
                 <div className="term-number">03</div>
                 <div className="term-text">
-                  <strong>Processing Time:</strong> Payment confirmation and verification may take 1-2 business days to complete.
+                  <strong>Processing Time:</strong> Payment confirmation and verification may take 1-2 business days to
+                  complete.
                 </div>
               </div>
               <div className="term-item">
                 <div className="term-number">04</div>
                 <div className="term-text">
-                  <strong>Project Timeline:</strong> Delayed payments may result in project scheduling adjustments and delivery timeline changes.
+                  <strong>Project Timeline:</strong> Delayed payments may result in project scheduling adjustments and
+                  delivery timeline changes.
                 </div>
               </div>
             </div>
@@ -403,11 +441,9 @@ const Payment = () => {
                 </div>
               </div>
             </div>
-
             <div className="payment-divider">
               <span>OR</span>
             </div>
-
             <div className="payment-option">
               <div className="option-header">
                 <div className="option-icon qr-icon">
@@ -421,11 +457,11 @@ const Payment = () => {
               <div className="qr-section">
                 <div className="qr-code">
                   <div className="qr-placeholder">
-                    <img src='/assets/img/payment_qr.jpg' className='qr_code_image' alt="QR Code" />
+                    <img src="/assets/img/payment_qr.jpg" className="qr_code_image" alt="QR Code" />
                   </div>
                 </div>
                 <div className="qr-instructions">
-                  <h5>Scan to Pay Rs. {paymentDetails.amount.toLocaleString()}</h5>
+                  <h5>Scan to Pay Rs. {clientDetails.amount?.toLocaleString()}</h5>
                   <p>Use your mobile banking app or digital wallet</p>
                   <div className="supported-apps">
                     <span>Phonepe</span>
@@ -453,8 +489,8 @@ const Payment = () => {
               <div className="file-uploaded">
                 <div className="file-preview">
                   <div className="file-icon">
-                    {file.type.includes('image') ? (
-                      <img src={file.url} alt="Preview" className="file-preview-image" />
+                    {file.type.includes("image") ? (
+                      <img src={file.url || "/placeholder.svg"} alt="Preview" className="file-preview-image" />
                     ) : (
                       <FileText size={32} />
                     )}
@@ -463,10 +499,7 @@ const Payment = () => {
                     <h4>{file.name}</h4>
                     <p>{(file.size / 1024).toFixed(2)} KB</p>
                   </div>
-                  <button
-                    className="remove-file"
-                    onClick={() => setFile(null)}
-                  >
+                  <button className="remove-file" onClick={() => setFile(null)}>
                     <Trash2 size={16} />
                   </button>
                 </div>
@@ -477,7 +510,7 @@ const Payment = () => {
               </div>
             ) : (
               <div
-                className={`upload-area ${dragActive ? 'drag-active' : ''}`}
+                className={`upload-area ${dragActive ? "drag-active" : ""}`}
                 onDragEnter={handleDrag}
                 onDragLeave={handleDrag}
                 onDragOver={handleDrag}
@@ -504,10 +537,7 @@ const Payment = () => {
                         accept="image/*,.pdf"
                         hidden
                       />
-                      <button
-                        className="upload-btn"
-                        onClick={() => fileInputRef.current.click()}
-                      >
+                      <button className="upload-btn" onClick={() => fileInputRef.current.click()}>
                         Choose File
                       </button>
                       <div className="file-requirements">
@@ -529,21 +559,20 @@ const Payment = () => {
           <div className="confirmation-content">
             <div className="confirmation-text">
               <h3>Ready to Submit Registration</h3>
-              <p>Your project coordinator will contact you within 24 hours of payment verification to begin your project development process.</p>
+              <p>
+                Your project coordinator will contact you within 24 hours of payment verification to begin your project
+                development process.
+              </p>
             </div>
-            <button
-              className="submit-button"
-              onClick={handleSubmit}
-              disabled={!file || imageLoading}
-            >
+            <button className="submit-button" onClick={handleSubmit} disabled={!file || imageLoading}>
               <Check size={20} />
-              {imageLoading ? 'Processing...' : 'Submit Registration'}
+              {imageLoading ? "Processing..." : "Submit Registration"}
             </button>
           </div>
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default Payment;
+export default Payment

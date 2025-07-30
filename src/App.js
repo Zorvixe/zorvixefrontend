@@ -60,7 +60,7 @@ function App() {
         {/* Routes without header/footer */}
         <Route element={<MinimalLayout />}>
           <Route
-            path="/payment/:token"
+            path="/payment/:clientNameForUrl/:payment_amount/:token"
             element={<Payment />}
           />        </Route>
 
