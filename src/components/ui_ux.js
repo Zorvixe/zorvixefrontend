@@ -9,7 +9,7 @@ const UiUx = () => {
   };
   
   useEffect(() => {
-    document.title = "UIUX | Zorvixe";
+    document.title = "UIUX | Zorvixe Technologies";
     window.scrollTo(0, 0);
     if (window.AOS) {
       window.AOS.init({ duration: 800 });

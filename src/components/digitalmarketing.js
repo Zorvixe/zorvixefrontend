@@ -13,7 +13,7 @@ const DigitalMarketingService = () => {
 
 
   useEffect(() => {
-    document.title = "Digital Marketing | Zorvixe";
+    document.title = "Digital Marketing | Zorvixe Technologies";
   }, []);
 
   return (

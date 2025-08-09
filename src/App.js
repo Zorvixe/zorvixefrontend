@@ -17,7 +17,6 @@ import UIUX from './components/ui_ux';
 import WebHosting from './components/webhosting';
 import WebDevelopment from './components/webdevelopment';
 import Maintenance from './components/maintainance';
-import Payment from './components/payment';
 import './App.css';
 
 function App() {
@@ -27,13 +26,6 @@ function App() {
       <Header />
       <Outlet />  {/* Renders the matched child route */}
       <Footer />
-    </div>
-  );
-
-  // Layout without header and footer
-  const MinimalLayout = () => (
-    <div className="App">
-      <Outlet />  {/* Renders the matched child route */}
     </div>
   );
 
@@ -56,13 +48,6 @@ function App() {
           <Route path="/services/ui_ux" element={<UIUX />} />
           <Route path="/maintainance" element={<Maintenance />} />
         </Route>
-
-        {/* Routes without header/footer */}
-        <Route element={<MinimalLayout />}>
-          <Route
-            path="/payment/:clientNameForUrl/:payment_amount/:token"
-            element={<Payment />}
-          />        </Route>
 
         {/* Standalone route without layout */}
         <Route path="*" element={<NotFound />} />

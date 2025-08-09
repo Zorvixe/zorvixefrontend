@@ -8,7 +8,7 @@ const TermsAndConditions = () => {
         }
     }, []);
     useEffect(() => {
-        document.title = "Terms and Conditions | Zorvixe";
+        document.title = "Terms and Conditions | Zorvixe Technologies";
     }, []);
 
 

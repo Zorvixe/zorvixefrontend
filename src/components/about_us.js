@@ -9,7 +9,7 @@ const AboutPage = () => {
   const [activeTab, setActiveTab] = useState("who-we-are")
   const [mounted, setMounted] = useState(false)
   useEffect(() => {
-    document.title = "About Us | Zorvixe";
+    document.title = "About Us | Zorvixe Technologies";
   }, []);
   useEffect(() => {
     setMounted(true)

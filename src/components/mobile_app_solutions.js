@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 
 const MobileAppSolutions = () => {
   useEffect(() => {
-    document.title = "Mobile App Solutions | Zorvixe";
+    document.title = "Mobile App Solutions | Zorvixe Technologies";
   }, []);
   useEffect(() => {
     window.scrollTo(0, 0);

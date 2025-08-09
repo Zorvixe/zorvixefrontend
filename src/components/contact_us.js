@@ -30,7 +30,7 @@ const Contact = () => {
   };
 
   useEffect(() => {
-    document.title = "Contact Us | Zorvixe";
+    document.title = "Contact Us | Zorvixe Technologies";
   }, []);
 
   // Validate name field (only letters and spaces)

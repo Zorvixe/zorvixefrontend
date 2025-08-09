@@ -7,7 +7,7 @@ const WebHosting = () => {
     setActiveTab(tab);
   };
   useEffect(() => {
-    document.title = "Web Hosting | Zorvixe";
+    document.title = "Web Hosting | Zorvixe Technologies";
   }, []);
 
   useEffect(() => {

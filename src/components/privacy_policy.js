@@ -7,7 +7,7 @@ const PrivacyPolicy = () => {
     }
   }, []);
       useEffect(() => {
-        document.title = "Privacy Policy | Zorvixe";
+        document.title = "Privacy Policy | Zorvixe Technologies";
     }, []);
 
   return (

@@ -23,7 +23,7 @@ const SEOServicePage = () => {
   }, []);
 
    useEffect(() => {
-        document.title = "SEO Optimization | Zorvixe";
+        document.title = "SEO Optimization | Zorvixe Technologies";
       }, []);
 
   return (

@@ -8,7 +8,7 @@ const WebDevelopment = () => {
   };
 
   useEffect(() => {
-    document.title = "Web Development | Zorvixe";
+    document.title = "Web Development | Zorvixe Technologies";
   }, []);
 
   useEffect(() => {

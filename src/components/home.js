@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 const Home = () => {
 
     useEffect(() => {
-        document.title = "Home | Zorvixe";
+        document.title = "Home | Zorvixe Technologies";
     }, []);
 
     const redirectToContact = () => {
